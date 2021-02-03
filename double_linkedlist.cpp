@@ -211,6 +211,7 @@ int main()
     insert("2"); // 5+2|
     print_list();
     insert("*"); // 5+2*|
+    left_shift(); // 5+2|*
     print_list();
     remove(); // 5+2|
     print_list();
