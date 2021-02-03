@@ -20,8 +20,8 @@ class Node
 Node::Node(string newKey) 
 {
     key = newKey;
-    temp->next = NULL;
-    temp->prev = NULL;
+    next = NULL;
+    prev = NULL;
 }
 
 /**
@@ -47,8 +47,8 @@ Node* cursor;
 void init()
 {
     // Using two sentinels for our data structure
-    head = create_node(NULL);
-    tail = create_node(NULL);
+    head = create_node("NULL");
+    tail = create_node("NULL");
     // The program cursor starting from head
     cursor = head;
     head->next = tail;
@@ -124,25 +124,43 @@ void insert(string newKey)
 // **************** End Insertion in linkedlist ****************
 
 // **************** Deletion in linkedlist ****************
+void remove_from_end()
+{
+    Node* temp = tail->prev;
+    tail->prev = temp->prev;
+    tail->prev->next = tail;
+    delete temp;
+}
+
+void remove_from_middle()
+{
+    Node* temp = cursor;
+    temp->prev->next = cursor->next;
+    temp->next->prev = cursor->prev;
+    cursor = temp->prev;
+    delete temp;
+}
+
 void remove()
 {
-    if (cursor == head)
+    if (head->next == tail || cursor == head)
     {
-        remove_from_head();
         return;
-    }
-    if (cursor == tail)
+    } else if (cursor == tail)
     {
-        remove_from_tail();
-        return;
+        remove_from_end();
+    } else 
+    {
+        remove_from_middle();
     }
-    cursor->next->prev = cursor->prev;
-    cursor->prev->next = cursor->next;
-    Node* temp1 = cursor;
-    cursor = temp1->prev;
-    delete temp1;
+    if (head->next == tail)
+    {
+        reset();
+    }
 }
 // **************** End Deletion in linkedlist ****************
+
+// **************** Cursor shifts ****************
 void right_shift()
 {
     if (cursor->next != NULL)
@@ -158,22 +176,25 @@ void left_shift()
         cursor = cursor->prev;
     }
 }
+// **************** End Cursor shifts ****************
 
-// Prints the linked list objects
 void print_list()
 {
-    Node* temp = head;
-    if (head == NULL)
+    if (head == cursor)
     {
-        cout << "|" << endl;
-        return;
+        cout << "|";
     }
-    while (temp != NULL)
+    Node* temp = head->next;
+    while (temp != tail)
     {
-        cout << temp->key << " ";
-        temp = temp->next;
+        cout << temp->key;
         if (temp == cursor)
-        cout << "| ";
+            cout << "|";
+        temp = temp->next;
+    }
+    if (tail == cursor)
+    {
+        cout << "|";
     }
     cout << endl;
 }
@@ -181,21 +202,15 @@ void print_list()
 // A test case
 int main() 
 {
-    insert('c');
-    insert('c'); 
-    insert('c'); 
-    insert('c'); 
-    insert('c'); 
-    insert('c'); 
+    init();
+    print_list(); // |
+    insert("5"); // 5|
     print_list();
-    left_shift();
-    left_shift();
-    remove(); 
+    insert("+"); // 5+|
     print_list();
-    left_shift();
-    remove(); 
+    insert("2"); // 5+2|
     print_list();
-    insert(2);
+    insert("*"); // 5+2*|
     print_list();
     return 0;
 }
