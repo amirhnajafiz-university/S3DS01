@@ -1,5 +1,5 @@
-#include<iostream>  
-#include<stack>  
+#include <iostream>  
+#include <stack>  
 
 using namespace std;  
 
