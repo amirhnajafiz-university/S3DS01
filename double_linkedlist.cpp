@@ -4,6 +4,7 @@
 
 using namespace std;
 
+
 /**
  * Node is a single element to store the data
  * of a full calculator string.
@@ -216,40 +217,5 @@ void print_list()
 int main() 
 {
     init();
-    print_list(); // |
-    insert("5"); // 5|
-    print_list();
-    insert("+"); // 5+|
-    print_list();
-    insert("2"); // 5+2|
-    print_list();
-    insert("*"); // 5+2*|
-    left_shift(); // 5+2|*
-    print_list();
-    remove(); // 5+2|*
-    print_list();
-    remove(); // 5+|*
-    print_list();
-    remove(); // 5|*
-    print_list();
-    remove(); // |*
-    print_list();
-    remove(); // |*
-    print_list();
-    insert("76"); // 76|*
-    print_list();
-    right_shift(); // 76*|
-    print_list(); 
-    remove();
-    insert("+");
-    insert("65"); // 76+65|
-    right_shift();
-    right_shift();
-    print_list();
-    left_shift();
-    remove();
-    print_list();
-    insert("2");
-    print_list();
     return 0;
 }
