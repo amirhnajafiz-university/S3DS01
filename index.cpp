@@ -1,6 +1,8 @@
-#include <iostream>
-#include <string>
 #include <bits/stdc++.h>
+#include <iostream>
+#include <stdlib.h>
+#include <string>
+#include <stack>
 
 using namespace std;
 
@@ -186,6 +188,142 @@ void left_shift()
 }
 // **************** End Cursor shifts ****************
 
+// **************** Infix to Postfix ****************
+bool IsOperator(char c)  
+{  
+    if(c == '+' || c == '-' || c == '*')  
+        return true;     
+    return false;  
+}  
+    
+bool IsOperand(char c)  
+{  
+    if(c >= '0' && c <= '9')  
+        return true;  
+    return false;  
+}  
+
+int precedence(char op)  
+{  
+    if(op == '+' || op == '-')                  
+        return 1;  
+    if (op == '*')  
+        return 2;
+    return 0;     
+} 
+
+bool eqlOrhigher(char op1, char op2)  
+{  
+    return precedence(op1) >= precedence(op2) ? true : false;  
+}  
+    
+string convert(string infix)  
+{  
+    stack <char> S;  
+    string postfix ="", temp = "";    
+    char ch;  
+    
+    S.push( '(' );  
+    infix += ')';  
+    
+    for(int i = 0; i < infix.length(); i++)  
+    {  
+        ch = infix[i];  
+        if(ch == ' ') 
+        { 
+            postfix += temp + " ";
+            temp = "";
+            continue;  
+        }
+        else if (ch == '(')
+        {  
+            postfix += temp + " ";
+            temp = "";
+            S.push(ch); 
+        } 
+        else if ( IsOperand(ch) ) 
+        { 
+            temp += ch;  
+        }    
+        else if ( IsOperator(ch) )  
+        {  
+            postfix += temp + " ";
+            temp = "";
+            while( !S.empty() && eqlOrhigher(S.top(), ch) )  
+            {  
+                postfix += S.top();  
+                S.pop();  
+            }  
+            S.push(ch);  
+        }  
+        else if(ch == ')')  
+        {  
+            postfix += temp + " ";
+            temp = "";
+            while( !S.empty() && S.top() != '(' )  
+            {  
+                postfix += S.top();  
+                S.pop();  
+            }  
+            S.pop();  
+        }  
+    }  
+    return postfix;  
+}  
+// **************** End Infix to Postfix ****************
+
+// **************** Postfix evaluate ****************
+long evaluatePostfix(string exp) 
+{ 
+	stack<long> S; 
+	
+	for (long i = 0; i < exp.length(); i++) 
+	{ 
+		if(exp[i] == ' ')
+            continue; 
+		else if ( IsOperand(exp[i]) ) 
+		{ 
+			long num=0; 
+			while( IsOperand(exp[i]) ) 
+			{ 
+			    num = num * 10 + (long)(exp[i] - '0'); 
+				i++; 
+			} 
+			i--; 
+			S.push(num); 
+		} else
+		{ 
+			long val1 = S.top(); 
+            S.pop();
+			long val2 = S.top(); 
+            S.pop();
+			switch (exp[i]) 
+			{ 
+                case '+': S.push(val2 + val1);break; 
+                case '-': S.push(val2 - val1); break; 
+                case '*': S.push(val2 * val1); break; 
+                case '/': S.push(val2 / val1); break; 
+			} 
+		} 
+	} 
+	return S.top(); 
+} 
+
+long evaulate()
+{
+    Node* temp = head->next;
+    string full_s = "";
+    while (temp != tail)
+    {
+        full_s += temp->key;
+        temp = temp->next;
+    }
+    full_s = convert(full_s);
+    long result = evaluatePostfix(full_s);
+    return result % (1000000000 + 7);
+}
+// **************** End Postfix evaluate ****************
+
 // **************** Input / Output ****************
 void print_list()
 {
@@ -246,16 +384,17 @@ void get_input()
             print_list();
         } else if (input == "!")
         {
-            cout << "Eval" << endl;
+            cout << evaulate() << endl;
         }
     }
 }
 // **************** End Input Output ****************
 
-// A test case
+// **************** Main ****************
 int main() 
 {
     init();
     get_input();
     return 0;
 }
+// **************** End Main ****************
