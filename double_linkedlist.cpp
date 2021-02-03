@@ -84,6 +84,7 @@ void insert_at_head(string newKey)
     temp->next = head->next;
     temp->prev = head;
     temp->next->prev = temp;
+    head->next = temp;
     cursor = temp;
 }
 
@@ -93,6 +94,7 @@ void insert_at_tail(string newKey)
     temp->prev = tail->prev;
     temp->next = tail;
     temp->prev->next = temp;
+    tail->prev = temp;
 }
 
 void insert_at_middle(string newKey)
@@ -213,15 +215,23 @@ int main()
     insert("*"); // 5+2*|
     left_shift(); // 5+2|*
     print_list();
-    remove(); // 5+2|
+    remove(); // 5+2|*
     print_list();
-    remove(); // 5+|
+    remove(); // 5+|*
     print_list();
-    remove(); // 5|
+    remove(); // 5|*
     print_list();
-    remove(); // |
+    remove(); // |*
     print_list();
-    remove(); // |
+    remove(); // |*
+    print_list();
+    insert("76"); // 76|*
+    print_list();
+    right_shift(); // 76*|
+    print_list(); 
+    remove();
+    insert("+");
+    insert("65"); // 76+65|
     print_list();
     return 0;
 }
