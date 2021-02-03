@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -11,13 +12,13 @@ using namespace std;
 class Node
 {
     public:
-        string key;
+        char key;
         Node* next;
         Node* prev;
-        Node(string key);
+        Node(char key);
 };
 // Constructor
-Node::Node(string newKey) 
+Node::Node(char newKey) 
 {
     key = newKey;
     next = NULL;
@@ -29,7 +30,7 @@ Node::Node(string newKey)
  * @newkey is the single char holder
  * 
  */
-Node* create_node(string newkey)
+Node* create_node(char newkey)
 {
     Node* temp = new Node(newkey);
     return temp;
@@ -47,8 +48,8 @@ Node* cursor;
 void init()
 {
     // Using two sentinels for our data structure
-    head = create_node("NULL");
-    tail = create_node("NULL");
+    head = create_node('N');
+    tail = create_node('N');
     // The program cursor starting from head
     cursor = head;
     head->next = tail;
@@ -68,7 +69,7 @@ void reset()
 
 
 // **************** Insertion in linkedlist ****************
-void insert_at_first(string newKey)
+void insert_at_first(char newKey)
 {
     Node* temp = create_node(newKey);
     temp->prev = head;
@@ -78,7 +79,7 @@ void insert_at_first(string newKey)
     cursor = temp;
 }
 
-void insert_at_head(string newKey)
+void insert_at_head(char newKey)
 {
     Node* temp = create_node(newKey);
     temp->next = head->next;
@@ -88,7 +89,7 @@ void insert_at_head(string newKey)
     cursor = temp;
 }
 
-void insert_at_tail(string newKey)
+void insert_at_tail(char newKey)
 {
     Node* temp = create_node(newKey);
     temp->prev = tail->prev;
@@ -97,7 +98,7 @@ void insert_at_tail(string newKey)
     tail->prev = temp;
 }
 
-void insert_at_middle(string newKey)
+void insert_at_middle(char newKey)
 {
     Node* temp = create_node(newKey);
     temp->next = cursor->next;
@@ -109,18 +110,24 @@ void insert_at_middle(string newKey)
 
 void insert(string newKey)
 {
-    if (head->next == tail)
+    char chars[newKey.length() + 1];
+    strcpy(chars, newKey.c_str());
+    for(int i = 0; i < newKey.length(); i++)
     {
-        insert_at_first(newKey);
-    } else if (cursor == head)
-    {
-        insert_at_head(newKey);
-    } else if (cursor == tail)
-    {
-        insert_at_tail(newKey);
-    } else
-    {
-        insert_at_middle(newKey);
+        char c = chars[i];
+        if (head->next == tail)
+        {
+            insert_at_first(c);
+        } else if (cursor == head)
+        {
+            insert_at_head(c);
+        } else if (cursor == tail)
+        {
+            insert_at_tail(c);
+        } else
+        {
+            insert_at_middle(c);
+        }
     }
 }
 // **************** End Insertion in linkedlist ****************
@@ -173,7 +180,11 @@ void right_shift()
 
 void left_shift()
 {
-    if(cursor->prev != NULL)
+    if (cursor == tail)
+    {
+        cursor = tail->prev;
+    }
+    if (cursor->prev != NULL)
     {
         cursor = cursor->prev;
     }
@@ -232,6 +243,13 @@ int main()
     remove();
     insert("+");
     insert("65"); // 76+65|
+    right_shift();
+    right_shift();
+    print_list();
+    left_shift();
+    remove();
+    print_list();
+    insert("2");
     print_list();
     return 0;
 }
