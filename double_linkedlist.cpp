@@ -212,5 +212,15 @@ int main()
     print_list();
     insert("*"); // 5+2*|
     print_list();
+    remove(); // 5+2|
+    print_list();
+    remove(); // 5+|
+    print_list();
+    remove(); // 5|
+    print_list();
+    remove(); // |
+    print_list();
+    remove(); // |
+    print_list();
     return 0;
 }
