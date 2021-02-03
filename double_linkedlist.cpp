@@ -1,136 +1,173 @@
 #include <iostream>
+#include <string>
 
 using namespace std;
 
-
+/**
+ * Node is a single element to store the data
+ * of a full calculator string.
+ * 
+ */
 class Node
 {
     public:
-        char key;
+        string key;
         Node* next;
         Node* prev;
-        Node(int key);
+        Node(string key);
 };
-
-Node::Node(char newKey) 
+// Constructor
+Node::Node(string newKey) 
 {
     key = newKey;
-}
-
-
-// Head address as a global variable
-Node* head = NULL;
-Node* tail = NULL;
-Node* cursor = NULL;
-
-
-// Methods of list :
-// Create a node in memory and return the address
-Node* create_node(char newkey)
-{
-    Node* temp = new Node(newkey);
     temp->next = NULL;
     temp->prev = NULL;
+}
+
+/**
+ * A function for creating the node elements.
+ * @newkey is the single char holder
+ * 
+ */
+Node* create_node(string newkey)
+{
+    Node* temp = new Node(newkey);
     return temp;
 }
 
+// global pointers
+Node* head;
+Node* tail;
+Node* cursor;
 
-// Inserts a new node at the head
-void insert_at_head(char newKey)
+/**
+ * This function sets the basics of our program.
+ * 
+ */
+void init()
+{
+    // Using two sentinels for our data structure
+    head = create_node(NULL);
+    tail = create_node(NULL);
+    // The program cursor starting from head
+    cursor = head;
+    head->next = tail;
+    tail->prev = head;
+}
+
+/**
+ * Setting everything back to its default.
+ * 
+ */
+void reset()
+{
+    cursor = head;
+    head->next = tail;
+    tail->prev = head;
+}
+
+
+// **************** Insertion in linkedlist ****************
+void insert_at_first(string newKey)
 {
     Node* temp = create_node(newKey);
-    if (head == NULL)
-    {
-        head = temp;
-        tail = temp;
-        return;
-    }
-    temp->next = head;
+    temp->prev = head;
+    temp->next = tail;
+    tail->prev = temp;
+    head->next = temp;
+    cursor = temp;
+}
+
+void insert_at_head(string newKey)
+{
+    Node* temp = create_node(newKey);
+    temp->next = head->next;
+    temp->prev = head;
     temp->next->prev = temp;
-    head = temp;
-    temp->prev = NULL;
-    return;
+    cursor = temp;
 }
-// Adds a new node at tail
-void insert_at_tail(char newKey)
+
+void insert_at_tail(string newKey)
 {
     Node* temp = create_node(newKey);
-    if (tail == NULL)
-    {
-        tail = temp;
-        head = temp;
-        return;
-    }
-    temp->prev = tail;
+    temp->prev = tail->prev;
+    temp->next = tail;
     temp->prev->next = temp;
-    tail = temp;
-    temp->next = NULL;
-    return;
 }
 
-// Removes the node at the head
-void remove_from_head()
+void insert_at_middle(string newKey)
 {
-    Node* temp = head;
-    head = temp->next;
-    head->prev = NULL;
-    delete temp;
-}
-// Deletes the node at the tail
-void remove_from_tail()
-{
-    Node* temp = tail;
-    tail = temp->prev;
-    tail->next = NULL;
-    delete temp;
+    Node* temp = create_node(newKey);
+    temp->next = cursor->next;
+    temp->prev = cursor;
+    cursor->next = temp;
+    temp->next->prev = temp;
+    cursor = temp;
 }
 
-// Adds a new node anywhere in the list
-void insert(char newKey)
+void insert(string newKey)
 {
-    Node* temp = cursor;
-    if (cursor == head)
+    if (head->next == tail)
+    {
+        insert_at_first(newKey);
+    } else if (cursor == head)
     {
         insert_at_head(newKey);
-        return;
-    }
-    if (cursor == tail)
+    } else if (cursor == tail)
     {
         insert_at_tail(newKey);
-        return;
+    } else
+    {
+        insert_at_middle(newKey);
     }
-    Node* newNode = create_node(newKey);
-    newNode->next = temp->next;
-    temp->next->prev = newNode;
-    newNode->prev = temp;
-    temp->next = newNode;
-    return;
 }
+// **************** End Insertion in linkedlist ****************
 
-// Removes a node at any given place from the list
+// **************** Deletion in linkedlist ****************
 void remove()
 {
-    Node* temp = cursor;
-    if (temp == head)
+    if (cursor == head)
     {
         remove_from_head();
         return;
     }
-    if (temp == tail)
+    if (cursor == tail)
     {
         remove_from_tail();
         return;
     }
-    Node* temp1 = temp->next;
-    temp->next = temp1->next;
-    temp->next->prev = temp;
+    cursor->next->prev = cursor->prev;
+    cursor->prev->next = cursor->next;
+    Node* temp1 = cursor;
+    cursor = temp1->prev;
     delete temp1;
+}
+// **************** End Deletion in linkedlist ****************
+void right_shift()
+{
+    if (cursor->next != NULL)
+    {
+        cursor = cursor->next;
+    }
+}
+
+void left_shift()
+{
+    if(cursor->prev != NULL)
+    {
+        cursor = cursor->prev;
+    }
 }
 
 // Prints the linked list objects
 void print_list()
 {
     Node* temp = head;
+    if (head == NULL)
+    {
+        cout << "|" << endl;
+        return;
+    }
     while (temp != NULL)
     {
         cout << temp->key << " ";
@@ -144,15 +181,18 @@ void print_list()
 // A test case
 int main() 
 {
-    insert(2);
-    insert(20); 
-    insert(23); 
-    insert(7); 
-    insert(4); 
-    insert(10); 
+    insert('c');
+    insert('c'); 
+    insert('c'); 
+    insert('c'); 
+    insert('c'); 
+    insert('c'); 
     print_list();
+    left_shift();
+    left_shift();
     remove(); 
     print_list();
+    left_shift();
     remove(); 
     print_list();
     insert(2);
