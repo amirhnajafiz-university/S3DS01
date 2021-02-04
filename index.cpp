@@ -400,7 +400,6 @@ long evaulate()
     {
         result = evaluatePostfix(full_s) % (LIMIT);
         cache_in(full_s, result);
-        print();
     } else 
     {
         result = memory[index_result].value;
