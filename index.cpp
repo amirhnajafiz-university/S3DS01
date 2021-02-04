@@ -188,6 +188,97 @@ void left_shift()
 }
 // **************** End Cursor shifts ****************
 
+// **************** Hash Table Implementing ****************
+const int CAPACITY = 20;
+class HashNode 
+{ 
+    public:
+        int free; 
+        long value; 
+        string key; 
+}; 
+
+HashNode memory[CAPACITY];
+
+void init_cache()
+{
+    for (int i = 0; i < CAPACITY; i++)
+    {
+        memory[i].free = 1;
+        memory[i].key = "NULL";
+        memory[i].value = 0;
+    }
+}
+
+int hash_function(string line)
+{
+    return line.length();
+}
+
+int key_generate(string line)
+{
+    int total_length = hash_function(line);
+    int temp = 0;
+    for (int i = 0; i < CAPACITY; i++)
+    {
+        temp = (total_length + i) % CAPACITY;
+        if (memory[temp].free == 1)
+        {
+            return temp;
+        }
+    }
+    return -1;
+}
+
+void cache_in(string line, long evaulate)
+{
+    int index = key_generate(line);
+    if (index == -1)
+    {
+        return;
+    } else 
+    {
+        memory[index].key = line;
+        memory[index].free = 0;
+        memory[index].value = evaulate;
+    }
+}
+
+int cache_out(string line)
+{
+    int total_length = hash_function(line);
+    int temp = 0;
+    for (int i = 0; i < CAPACITY; i++)
+    {
+        temp = (total_length + i) % CAPACITY;
+        if (memory[temp].key == line)
+        {
+            return temp;
+        }
+    }
+    return -1;
+}
+
+void print()
+{
+    for (int i = 0; i < CAPACITY; i++)
+    {
+        if (memory[i].free == 1)
+        {
+            cout << " __ ";
+        } else
+        {
+            cout << " " << memory[i].key << " "; 
+        }
+        if (i == CAPACITY / 2)
+        {
+            cout << endl;
+        }
+    }
+    cout << endl;
+}
+// **************** End Hash Table Implementing ****************
+
 // **************** Infix to Postfix ****************
 bool IsOperator(char c)  
 {  
@@ -312,6 +403,7 @@ long evaluatePostfix(string exp)
 long evaulate()
 {
     Node* temp = head->next;
+
     string full_s = "";
     while (temp != tail)
     {
@@ -319,8 +411,20 @@ long evaulate()
         temp = temp->next;
     }
     full_s = convert(full_s);
-    long result = evaluatePostfix(full_s);
-    return result % (1000000000 + 7);
+
+    int index_result = cache_out(full_s);
+    long result;
+    if (index_result == -1)
+    {
+        result = evaluatePostfix(full_s) % (1000000000 + 7);
+        cache_in(full_s, result);
+        print();
+    } else 
+    {
+        result = memory[index_result].value;
+    }
+
+    return result;
 }
 // **************** End Postfix evaluate ****************
 
@@ -394,6 +498,7 @@ void get_input()
 int main() 
 {
     init();
+    init_cache();
     get_input();
     return 0;
 }
