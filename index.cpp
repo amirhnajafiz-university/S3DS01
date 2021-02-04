@@ -469,6 +469,10 @@ void get_input()
             print_list();
         } else if (input == "!")
         {
+            if (head->next == tail)
+            {
+                continue;
+            }
             cout << evaulate() << endl;
         }
     }
