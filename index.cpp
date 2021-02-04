@@ -194,7 +194,7 @@ class HashNode
 { 
     public:
         int free; 
-        long value; 
+        long long int value; 
         string key; 
 }; 
 
@@ -230,7 +230,7 @@ int key_generate(string line)
     return -1;
 }
 
-void cache_in(string line, long evaulate)
+void cache_in(string line, long long int evaulate)
 {
     int index = key_generate(line);
     if (index == -1)
@@ -257,25 +257,6 @@ int cache_out(string line)
         }
     }
     return -1;
-}
-
-void print()
-{
-    for (int i = 0; i < CAPACITY; i++)
-    {
-        if (memory[i].free == 1)
-        {
-            cout << " __ ";
-        } else
-        {
-            cout << " " << memory[i].key << " "; 
-        }
-        if (i == CAPACITY / 2)
-        {
-            cout << endl;
-        }
-    }
-    cout << endl;
 }
 // **************** End Hash Table Implementing ****************
 
@@ -364,9 +345,10 @@ string convert(string infix)
 // **************** End Infix to Postfix ****************
 
 // **************** Postfix evaluate ****************
-long evaluatePostfix(string exp) 
+const long long int LIMIT = 1000000000 + 7;
+long long int evaluatePostfix(string exp) 
 { 
-	stack<long> S; 
+	stack<long long int> S; 
 	
 	for (long i = 0; i < exp.length(); i++) 
 	{ 
@@ -374,19 +356,19 @@ long evaluatePostfix(string exp)
             continue; 
 		else if ( IsOperand(exp[i]) ) 
 		{ 
-			long num=0; 
+			long long int num=0; 
 			while( IsOperand(exp[i]) ) 
 			{ 
-			    num = num * 10 + (long)(exp[i] - '0'); 
+			    num = num * 10 + (long long int)(exp[i] - '0'); 
 				i++; 
 			} 
 			i--; 
 			S.push(num); 
 		} else
 		{ 
-			long val1 = S.top(); 
+			long long int val1 = S.top(); 
             S.pop();
-			long val2 = S.top(); 
+			long long int val2 = S.top(); 
             S.pop();
 			switch (exp[i]) 
 			{ 
@@ -413,10 +395,10 @@ long evaulate()
     full_s = convert(full_s);
 
     int index_result = cache_out(full_s);
-    long result;
+    long long int result;
     if (index_result == -1)
     {
-        result = evaluatePostfix(full_s) % (1000000000 + 7);
+        result = evaluatePostfix(full_s) % (LIMIT);
         cache_in(full_s, result);
         print();
     } else 
