@@ -454,7 +454,7 @@ void get_input()
     cursor = head;
     
     string input;
-    for (long i = 0; i < orders; i++)
+    for (long i = 0; i <= orders; i++)
     {
         getline(cin, input); 
         if (input == ">")
