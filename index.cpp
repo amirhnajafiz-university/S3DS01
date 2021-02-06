@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string>
 #include <stack>
+#include <cstdlib>
+#include <fstream> 
 
 using namespace std;
 
@@ -210,18 +212,18 @@ void init_cache()
     }
 }
 
-int hash_function(string line)
+long long int hash_function(string line)
 {
     return line.length();
 }
 
 int key_generate(string line)
 {
-    int total_length = hash_function(line);
+    long long int total_length = hash_function(line);
     int temp = 0;
     for (int i = 0; i < CAPACITY; i++)
     {
-        temp = (total_length + i) % CAPACITY;
+        temp = (int)(total_length + i) % CAPACITY;
         if (memory[temp].free == 1)
         {
             return temp;
@@ -230,7 +232,7 @@ int key_generate(string line)
     return -1;
 }
 
-void cache_in(string line, long long int evaulate)
+void cache_in(string line, long long int value)
 {
     int index = key_generate(line);
     if (index == -1)
@@ -240,17 +242,17 @@ void cache_in(string line, long long int evaulate)
     {
         memory[index].key = line;
         memory[index].free = 0;
-        memory[index].value = evaulate;
+        memory[index].value = value;
     }
 }
 
 int cache_out(string line)
 {
-    int total_length = hash_function(line);
+    long long int total_length = hash_function(line);
     int temp = 0;
     for (int i = 0; i < CAPACITY; i++)
     {
-        temp = (total_length + i) % CAPACITY;
+        temp = (int)(total_length + i) % CAPACITY;
         if (memory[temp].key == line)
         {
             return temp;
@@ -298,7 +300,7 @@ string convert(string infix)
     S.push( '(' );  
     infix += ')';  
     
-    for(int i = 0; i < infix.length(); i++)  
+    for(long long int i = 0; i < infix.length(); i++)  
     {  
         ch = infix[i];  
         if(ch == ' ') 
@@ -345,12 +347,12 @@ string convert(string infix)
 // **************** End Infix to Postfix ****************
 
 // **************** Postfix evaluate ****************
-const long long int LIMIT = 1000000000 + 7;
+const long long int LIMIT = 1000000007;
 long long int evaluatePostfix(string exp) 
 { 
 	stack<long long int> S; 
 	
-	for (long i = 0; i < exp.length(); i++) 
+	for (long long int i = 0; i < exp.length(); i++) 
 	{ 
 		if(exp[i] == ' ')
             continue; 
@@ -372,17 +374,16 @@ long long int evaluatePostfix(string exp)
             S.pop();
 			switch (exp[i]) 
 			{ 
-                case '+': S.push(val2 + val1);break; 
-                case '-': S.push(val2 - val1); break; 
-                case '*': S.push(val2 * val1); break; 
-                case '/': S.push(val2 / val1); break; 
+                case '+': S.push((val2 + val1) % LIMIT); break; 
+                case '-': S.push((val2 - val1) % LIMIT); break; 
+                case '*': S.push((val2 * val1) % LIMIT); break; 
 			} 
 		} 
 	} 
 	return S.top(); 
 } 
 
-long evaulate()
+long long int evaulate()
 {
     Node* temp = head->next;
 
@@ -398,7 +399,7 @@ long evaulate()
     long long int result;
     if (index_result == -1)
     {
-        result = evaluatePostfix(full_s) % (LIMIT);
+        result = evaluatePostfix(full_s);
         cache_in(full_s, result);
     } else 
     {
@@ -410,29 +411,33 @@ long evaulate()
 // **************** End Postfix evaluate ****************
 
 // **************** Input / Output ****************
-void print_list()
+string print_list()
 {
+    string line = "";
     if (head == cursor)
     {
-        cout << "|";
+        line += "|";
     }
     Node* temp = head->next;
     while (temp != tail)
     {
-        cout << temp->key;
+        line += temp->key;
         if (temp == cursor)
-            cout << "|";
+            line += "|";
         temp = temp->next;
     }
     if (tail == cursor)
     {
-        cout << "|";
+        line += "|";
     }
-    cout << endl;
+    line += "\n";
+    return line;
 }
 
 void get_input()
 {
+    ofstream MyFile("result5.txt");
+
     int orders;
     cin >> orders;
 
@@ -441,7 +446,7 @@ void get_input()
 
     char chars[start.length() + 1];
     strcpy(chars, start.c_str());
-    for (int i = 0; i < start.length(); i++)
+    for (long i = 0; i < start.length(); i++)
     {
         insert(start[i]);
     }
@@ -449,7 +454,7 @@ void get_input()
     cursor = head;
     
     string input;
-    for (int i = 0; i < orders; i++)
+    for (long i = 0; i < orders; i++)
     {
         getline(cin, input); 
         if (input == ">")
@@ -466,16 +471,18 @@ void get_input()
             insert(input[2]);
         } else if (input == "?")
         {
-            print_list();
+            MyFile << print_list();
         } else if (input == "!")
         {
             if (head->next == tail)
             {
                 continue;
             }
-            cout << evaulate() << endl;
+            MyFile << evaulate() << endl;
         }
     }
+
+    MyFile.close();
 }
 // **************** End Input Output ****************
 
