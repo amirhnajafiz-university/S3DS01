@@ -399,7 +399,7 @@ long long int evaulate()
     long long int result;
     if (index_result == -1)
     {
-        result = evaluatePostfix(full_s);
+        result = abs(evaluatePostfix(full_s) % LIMIT);
         cache_in(full_s, result);
     } else 
     {
