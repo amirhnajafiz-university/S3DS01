@@ -1,3 +1,25 @@
+/**
+ * Data structures and Algorithm final project.
+ * 
+ * Sources that I used for this project :
+ *  1. https://github.com/sinamna/DSA/blob/master/Data%20Structures/Lists/LinkedList/CPP/double_list.cpp => Double linked list
+ *  2. https://runestone.academy/runestone/books/published/pythonds/BasicDS/InfixPrefixandPostfixExpressions.html => Basics of post-fix and in-fix
+ *  3. https://www.geeksforgeeks.org/stack-set-2-infix-to-postfix/ => Convert in-fix to post-fix
+ *  4. https://www.includehelp.com/c/evaluation-of-postfix-expressions-using-stack-with-c-program.aspx => Evaluation of in-fix
+ * 
+ * - I used a double linkedlist with two sentinels ( "head" & "tail" ) to store the strings.
+ * - By using two methods , first I convert in-fix to post-fix, then I calculate the string.
+ * - For cursor I used a pointer. If it is on the head then it will appear at beginnig of string, else if it s on tail it will appear at the end,
+ *   else it would be appear after a pointing node value.
+ * - Shifts are basically moving the pointer on the nodes.
+ * - Our hash-table is open-addressing mode table.
+ * - For hashing, since we are only gonna use 20 '!' orders, we create a memory of 20, and we hash the strings by their length , plus a probe
+ *   that increases one by one.
+ * 
+ * Author : Amirhossein Najafizadeh
+ * Student ID : 9831065
+ * 
+ */
 #include <bits/stdc++.h>
 #include <iostream>
 #include <stdlib.h>
@@ -10,6 +32,7 @@ using namespace std;
 /**
  * Node is a single element to store the data
  * of a full calculator string.
+ * Each node stores a single charecter.
  * 
  */
 class Node
@@ -20,6 +43,7 @@ class Node
         Node* prev;
         Node(char key);
 };
+
 // Constructor
 Node::Node(char newKey) 
 {
@@ -28,9 +52,10 @@ Node::Node(char newKey)
     prev = NULL;
 }
 
+
 /**
  * A function for creating the node elements.
- * @newkey is the single char holder
+ * @newkey is the single charecter
  * 
  */
 Node* create_node(char newkey)
@@ -39,13 +64,16 @@ Node* create_node(char newkey)
     return temp;
 }
 
+
 // global pointers
 Node* head;
 Node* tail;
 Node* cursor;
 
+
 /**
  * This function sets the basics of our program.
+ * Like two sentinels and the cursor that points to head.
  * 
  */
 void init()
@@ -59,8 +87,10 @@ void init()
     tail->prev = head;
 }
 
+
 /**
- * Setting everything back to its default.
+ * This function is for
+ * setting everything back to its default.
  * 
  */
 void reset()
@@ -70,7 +100,7 @@ void reset()
     tail->prev = head;
 }
 
-
+// **************** Data-Structure ****************
 // **************** Insertion in linkedlist ****************
 void insert_at_first(char newKey)
 {
@@ -165,6 +195,8 @@ void remove()
     }
 }
 // **************** End Deletion in linkedlist ****************
+// **************** End Data-Structure ****************
+
 
 // **************** Cursor shifts ****************
 void right_shift()
@@ -188,6 +220,7 @@ void left_shift()
 }
 // **************** End Cursor shifts ****************
 
+
 // **************** Hash Table Implementing ****************
 const int CAPACITY = 20;
 class HashNode 
@@ -200,11 +233,15 @@ class HashNode
 
 HashNode memory[CAPACITY];
 
+/**
+ * Sets the memory for program.
+ * 
+ */
 void init_cache()
 {
     for (int i = 0; i < CAPACITY; i++)
     {
-        memory[i].free = 1;
+        memory[i].free = 1; // This flag is used to find the empty houses in memory ( 1 is free / 0 is full )
         memory[i].key = "NULL";
         memory[i].value = 0;
     }
@@ -230,6 +267,10 @@ int key_generate(string line)
     return -1;
 }
 
+/**
+ * Stores a new value into hash-map.
+ * 
+ */
 void cache_in(string line, long long int value)
 {
     int index = key_generate(line);
@@ -244,6 +285,10 @@ void cache_in(string line, long long int value)
     }
 }
 
+/**
+ * Does a search in hash-map and returns the index if founded. ( -1 means not found )
+ * 
+ */
 int cache_out(string line)
 {
     long long int total_length = hash_function(line);
@@ -434,6 +479,10 @@ void print_list()
     cout << endl;
 }
 
+/**
+ * Program main function to get the data from console.
+ * 
+ */
 void get_input()
 {
     int orders;
