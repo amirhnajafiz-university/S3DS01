@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <string>
 #include <stack>
-#include <cstdlib>
-#include <fstream> 
 
 using namespace std;
 
@@ -361,7 +359,7 @@ long long int evaluatePostfix(string exp)
 			long long int num=0; 
 			while( IsOperand(exp[i]) ) 
 			{ 
-			    num = num * 10 + (long long int)(exp[i] - '0'); 
+			    num = ( num * 10 + (long long int)(exp[i] - '0') ) % LIMIT; 
 				i++; 
 			} 
 			i--; 
@@ -399,7 +397,11 @@ long long int evaulate()
     long long int result;
     if (index_result == -1)
     {
-        result = abs(evaluatePostfix(full_s) % LIMIT);
+        result = evaluatePostfix(full_s);
+        if ( result < 0)
+        {
+            result += LIMIT;
+        }
         cache_in(full_s, result);
     } else 
     {
@@ -411,33 +413,29 @@ long long int evaulate()
 // **************** End Postfix evaluate ****************
 
 // **************** Input / Output ****************
-string print_list()
+void print_list()
 {
-    string line = "";
     if (head == cursor)
     {
-        line += "|";
+        cout << "|";
     }
     Node* temp = head->next;
     while (temp != tail)
     {
-        line += temp->key;
+        cout << temp->key;
         if (temp == cursor)
-            line += "|";
+            cout << "|";
         temp = temp->next;
     }
     if (tail == cursor)
     {
-        line += "|";
+        cout << "|";
     }
-    line += "\n";
-    return line;
+    cout << endl;
 }
 
 void get_input()
 {
-    ofstream MyFile("result5.txt");
-
     int orders;
     cin >> orders;
 
@@ -454,7 +452,7 @@ void get_input()
     cursor = head;
     
     string input;
-    for (long i = 0; i <= orders; i++)
+    for (long i = 0; i < orders; i++)
     {
         getline(cin, input); 
         if (input == ">")
@@ -471,18 +469,16 @@ void get_input()
             insert(input[2]);
         } else if (input == "?")
         {
-            MyFile << print_list();
+            print_list();
         } else if (input == "!")
         {
             if (head->next == tail)
             {
                 continue;
             }
-            MyFile << evaulate() << endl;
+            cout << evaulate() << endl;
         }
     }
-
-    MyFile.close();
 }
 // **************** End Input Output ****************
 
