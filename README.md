@@ -14,3 +14,4 @@ My <i>Data Structures and Algorithmes</i> course final project.
   Since calculating big numbers needs a large memory space, we decrease our results by moding them by <b>10^9 + 7</b>.<br />
   Also we use a hash-map to store the results, thus in case of evaulation old strings, we just get them from our cache.<br />
 </p>
+
